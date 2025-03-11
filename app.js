@@ -1,10 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Book = require("./models/book");
+require("dotenv").config();
+
+const booksRoutes = require("./routes/books");
+
+const username = encodeURIComponent(process.env.username);
+const password = encodeURIComponent(process.env.password);
+const cluster = process.env.cluster;
 
 // Connexion à MongoDB
-const mongoURI =
-  "mongodb+srv://jamdefosse:2PEPE9237THJwNNP@cluster0.6g0cl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const mongoURI = `mongodb+srv://${username}:${password}@${cluster}.6g0cl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 mongoose
   .connect(mongoURI)
@@ -38,42 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route pour poster un livre
-app.post("/api/books", async (req, res) => {
-  try {
-    delete req.body._id;
-    const book = new Book({
-      ...req.body,
-    });
-    await book.save();
-    res.status(201).json({ message: "Objet enregistré !" });
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-});
-
-// Route pour récupérer tous les livres
-app.get("/api/books", async (req, res) => {
-  try {
-    const books = await Book.find();
-    res.status(200).json(books);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Route pour récupérer un livre
-app.get("/api/books/:id", async (req, res) => {
-  try {
-    const thing = await Thing.findOne({ _id: req.params.id });
-    if (thing) {
-      res.status(200).json(thing);
-    } else {
-      res.status(404).json({ error: "Book not found" });
-    }
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-});
+// Importer les routes pour les livres
+app.use("/api/books", booksRoutes);
 
 module.exports = app;
