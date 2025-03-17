@@ -14,6 +14,9 @@ router.get("/:id", booksCtrl.getOneBook);
 router.post("/", auth, multer, booksCtrl.postOneBook);
 
 // Route pour mettre à jour un livre
-router.put("/:id", auth, multer, booksCtrl.updateBook);
+router.put("/:id", auth, multer, booksCtrl.updateOneBook);
+
+// Route pour supprimer un livre
+router.delete("/:id", auth, booksCtrl.deleteOneBook);
 
 module.exports = router;
