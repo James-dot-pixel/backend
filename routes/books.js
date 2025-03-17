@@ -13,4 +13,7 @@ router.get("/:id", booksCtrl.getOneBook);
 // Route pour poster un livre
 router.post("/", auth, multer, booksCtrl.postOneBook);
 
+// Route pour mettre à jour un livre
+router.put("/:id", auth, multer, booksCtrl.updateBook);
+
 module.exports = router;
