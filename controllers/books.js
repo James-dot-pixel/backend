@@ -11,9 +11,16 @@ exports.getBooks = async (req, res) => {
 
 exports.postOneBook = async (req, res) => {
   try {
-    delete req.body._id;
+    const bookObject = JSON.parse(req.body.book);
+    delete bookObject._id;
+    delete bookObject.userId;
+    console.log(bookObject);
     const book = new Book({
-      ...req.body,
+      ...bookObject,
+      userId: req.auth.userId,
+      imageUrl: `${req.protocol}://${req.get("host")}/images/${
+        req.file.filename
+      }`,
     });
     await book.save();
     res.status(201).json({ message: "Objet enregistré !" });
@@ -24,9 +31,9 @@ exports.postOneBook = async (req, res) => {
 
 exports.getOneBook = async (req, res) => {
   try {
-    const thing = await Thing.findOne({ _id: req.params.id });
-    if (thing) {
-      res.status(200).json(thing);
+    const book = await Book.findOne({ _id: req.params.id });
+    if (book) {
+      res.status(200).json(book);
     } else {
       res.status(404).json({ error: "Book not found" });
     }

@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const auth = require("../middleware/auth");
 require("dotenv").config();
+const path = require("path");
 
 const booksRoutes = require("./routes/books");
 const usersRoutes = require("./routes/users");
@@ -45,10 +45,12 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 // Importer les routes pour l'authentification
 app.use("/api/auth", usersRoutes);
 
 // Importer les routes pour les livres
-app.use("/api/books", auth, booksRoutes);
+app.use("/api/books", booksRoutes);
 
 module.exports = app;
